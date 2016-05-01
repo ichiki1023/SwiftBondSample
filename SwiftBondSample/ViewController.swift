@@ -7,12 +7,28 @@
 //
 
 import UIKit
+import Bond
 
 class ViewController: UIViewController {
+    @IBOutlet weak var tableView: UITableView!
+
+    //let viewModel = ViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let array1 = ObservableArray(["1つ目", "2つ目", "3つ目"])
+        let array2 = ObservableArray(["First", "Second"])
+        let dataSource = ObservableArray([array1, array2])
+
+        dataSource.bindTo(tableView) { indexPath, dataSource, tableView in
+            let cell = tableView.dequeueReusableCellWithIdentifier(
+                "Cell", forIndexPath: indexPath)
+            let name = dataSource[indexPath.section][indexPath.row]
+            cell.textLabel?.text = name
+            return cell
+        }
+
+        tableView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,5 +37,11 @@ class ViewController: UIViewController {
     }
 
 
+}
+
+extension ViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        print("SELECT!!!")
+    }
 }
 
